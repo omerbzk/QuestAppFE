@@ -1,7 +1,7 @@
 import React from "react";
 import Post from "../Post/Post";
 import { useState, useEffect } from "react";
-import Container from '@mui/material/Container';
+import Container from "@mui/material/Container";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     backgroundColor: "#cfe8fc",
     height: "100vh",
-  }
+  },
 }));
 
 function Home() {
@@ -42,14 +42,16 @@ function Home() {
     return <div>Loading...</div>;
   } else {
     return (
-
       <Container fixed className={classes.container}>
         {postList.map((post) => (
-          <Post title={post.title} text={post.text}></Post>
+          <Post
+            userId={post.userId}
+            userName={post.userName}
+            title={post.title}
+            text={post.text}
+          ></Post>
         ))}
       </Container>
-        
-      
     );
   }
 }
