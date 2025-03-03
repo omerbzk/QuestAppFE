@@ -3,6 +3,7 @@ import Post from "../Post/Post";
 import { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import { makeStyles } from "@mui/styles";
+import PostForm from "../Post/PostForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -10,8 +11,9 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#cfe8fc",
-    height: "100vh",
+    background: "linear-gradient(135deg, #E0EAF8 0%, #A1C4FD 50%, #C2E9FB 100%)",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1)",
+    color: "black",
   },
 }));
 
@@ -42,16 +44,22 @@ function Home() {
     return <div>Loading...</div>;
   } else {
     return (
-      <Container fixed className={classes.container}>
+      <div className={classes.container}>
+        <PostForm
+            userId={1}
+            userName={"John Doe"}
+            title={"title"}
+            text={"text"} />
         {postList.map((post) => (
           <Post
+            key={post.id}
             userId={post.userId}
             userName={post.userName}
             title={post.title}
             text={post.text}
-          ></Post>
+          />
         ))}
-      </Container>
+      </div>
     );
   }
 }

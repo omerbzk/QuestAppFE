@@ -14,6 +14,8 @@ import ShareIcon from "@mui/icons-material/Share";
 import { makeStyles } from "@mui/styles";
 import InsertCommentIcon from '@mui/icons-material/InsertComment';
 import { Link } from "react-router-dom";
+import { Button, InputAdornment, OutlinedInput } from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
 
 const useStyles = makeStyles({
   root: {
@@ -55,7 +57,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-function Post(props) {
+function PostForm(props) {
   const { title, text, userId, userName } = props;
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
@@ -80,11 +82,34 @@ function Post(props) {
           </Avatar>
           </Link>
         }
-        title={title}
+        title={<OutlinedInput 
+            id="outlined-adorment-amount"
+            multiline
+            placeholder="Title"
+            inputProps={{ maxLength: 25 }}
+            fullWidth>
+            </OutlinedInput>}
       />
       <CardContent>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {text}
+        <OutlinedInput 
+            id="outlined-adorment-amount"
+            multiline
+            placeholder="Text"
+            inputProps={{ maxLength: 500 }}
+            fullWidth
+            endAdornment = {
+                <InputAdornment position="end">
+                    <Button
+                    variant="contained"
+                    style={{ background: 'linear-gradient(45deg, #2196f3 30%, #21cbf3 90%)' }}
+                    endIcon={<SendIcon />}>
+                        Post
+                    </Button>
+                 </InputAdornment>
+            }
+            >
+            </OutlinedInput>
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -113,4 +138,4 @@ function Post(props) {
   );
 }
 
-export default Post;
+export default PostForm;
