@@ -75,7 +75,7 @@ function Post(props) {
       <CardHeader
         avatar={
           <Link className={classes.link} to={{ pathname: "/users/" + userId }}>
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+          <Avatar aria-label="recipe" className={classes.avatar}>
             {userName.charAt(0).toUpperCase()}
           </Avatar>
           </Link>

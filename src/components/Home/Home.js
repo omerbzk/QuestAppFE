@@ -23,7 +23,7 @@ function Home() {
   const [postList, setPostList] = useState([]);
   const classes = useStyles();
 
-  useEffect(() => {
+  const refreshPosts = () => {
     fetch("/v1/posts")
       .then((res) => res.json())
       .then(
@@ -36,7 +36,12 @@ function Home() {
           setError(error);
         }
       );
-  }, []);
+  }
+
+
+  useEffect(() => {
+    refreshPosts();
+  }, [postList]);
 
   if (error) {
     return <div>Error!: {error.message}</div>;
@@ -48,8 +53,7 @@ function Home() {
         <PostForm
             userId={1}
             userName={"John Doe"}
-            title={"title"}
-            text={"text"} />
+            refreshPosts = {refreshPosts} />
         {postList.map((post) => (
           <Post
             key={post.id}
