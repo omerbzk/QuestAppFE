@@ -1,7 +1,6 @@
 import React from "react";
 import Post from "../Post/Post";
 import { useState, useEffect } from "react";
-import Container from "@mui/material/Container";
 import { makeStyles } from "@mui/styles";
 import PostForm from "../Post/PostForm";
 
@@ -38,7 +37,6 @@ function Home() {
       );
   }
 
-
   useEffect(() => {
     refreshPosts();
   }, [postList]);
@@ -57,6 +55,7 @@ function Home() {
         {postList.map((post) => (
           <Post
             key={post.id}
+            postId={post.id}
             userId={post.userId}
             userName={post.userName}
             title={post.title}

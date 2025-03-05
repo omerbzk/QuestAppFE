@@ -107,13 +107,18 @@ function PostForm(props) {
   };
 
   return (
-    <div>
-      <Snackbar open={isSent} autoHideDuration={6000} onClose={handleClose}>
+    <div className={classes.root}>
+      <Snackbar
+        open={isSent}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
         <Alert onClose={handleClose} severity="success">
           Post sent successfully!
         </Alert>
       </Snackbar>
-      <Card className={classes.root}>
+      <Card>
         <CardHeader
           avatar={
             <Link
