@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
 import Comment from "../Comment/Comment";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CommentForm from "../Comment/CommentForm";
 
 const useStyles = makeStyles({
   root: {
@@ -61,7 +62,7 @@ const ExpandMore = styled((props) => {
 const theme = createTheme();
 
 function Post(props) {
-  const { title, text, userId, userName, postId } = props;
+  const { title, text, userId, userName, postId, likes } = props;
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -69,6 +70,7 @@ function Post(props) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [commentList, setCommentList] = useState([]);
   const isInitialMount = useRef(true);
+  const likeCount = likes?.length || 0;
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -122,9 +124,7 @@ function Post(props) {
           <CardActions disableSpacing>
             <IconButton onClick={handleLike} aria-label="add to favorites">
               <FavoriteIcon style={liked ? { color: "red" } : null} />
-            </IconButton>
-            <IconButton aria-label="share">
-              <ShareIcon />
+              {likeCount}
             </IconButton>
             <ExpandMore
               expand={expanded}
@@ -149,6 +149,11 @@ function Post(props) {
                     ></Comment>
                   ))
                 : "loading"}
+                <CommentForm 
+                userId={1}
+                userName={"USER"}
+                postId={postId}
+                ></CommentForm>
             </Container>
           </Collapse>
         </Card>
