@@ -7,11 +7,13 @@ import {
   InputLabel,
 } from "@mui/material";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // useNavigate kancasını import ediyoruz
 
 function Auth() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // useNavigate kancasını kullanarak navigate fonksiyonunu oluşturuyoruz
 
   const handleUsername = (value) => {
     setUsername(value);
@@ -21,33 +23,34 @@ function Auth() {
     setPassword(value);
   };
 
-    const sendRequest = (path) => {
-    fetch("/auth/" + path, {
+  const sendRequest = (path) => {
+    fetch("/v1/auth/" + path, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ 
-        userName : username, 
-        password : password
-    }),
+      body: JSON.stringify({
+        userName: username,
+        password: password,
+      }),
     })
       .then((response) => response.json())
-      .then(((result) = result))
-      .catch((error) => console.log("error", error))
+      .then((result) => {
+        localStorage.setItem("token", result.message);
+        localStorage.setItem("currentUser", result.userId);
+        localStorage.setItem("userName", username);
+      })
+      .then((result) => console.log("Success:", result))
+      .catch((error) => console.log("error", error));
   };
 
-  const handleRegister = () => {
-    sendRequest("register");
+  const handleButton = (path) => {
+    sendRequest(path);
     setUsername("");
     setPassword("");
+    navigate("/auth"); 
   };
 
-  const handleLogin = () => {
-    sendRequest("login");
-    setUsername("");
-    setPassword("");
-  };
 
   return (
     <Box
@@ -100,7 +103,7 @@ function Auth() {
                 background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
                 color: "white",
               }}
-              onClick={handleLogin}
+              onClick={() => handleButton("login")}
             >
               Login
             </Button>
@@ -124,7 +127,7 @@ function Auth() {
                 background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
                 color: "white",
               }}
-              onClick={handleRegister}
+              onClick={() => handleButton("register")}
             >
               Register
             </Button>
