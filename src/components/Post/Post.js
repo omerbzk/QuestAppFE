@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -72,6 +72,8 @@ function Post(props) {
   const isInitialMount = useRef(true);
   const [likeCount, setLikeCount] = useState(likes?.length || 0);
   const [likeId, setLikeId] = useState(null);
+  let disabled = localStorage.getItem("currentUser") == null ? true : false;
+
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -80,19 +82,18 @@ function Post(props) {
   };
 
   const handleLike = () => {
-    setIsLiked(!isLiked);
-    
-    if(!isLiked) {
+    if (!isLiked) {
       saveLike();
       setLikeCount(likeCount + 1);
+      setIsLiked(true);
     } else {
       deleteLike();
       setLikeCount(likeCount - 1);
+      setIsLiked(false);
     }
-
   };
 
-  const refreshComments = () => {
+  const refreshComments = useCallback(() => {
     fetch("/v1/comments?postId=" + postId)
       .then((res) => res.json())
       .then(
@@ -105,45 +106,55 @@ function Post(props) {
           setError(error);
         }
       );
-  };
+  }, [postId]);
 
   const saveLike = () => {
     fetch("/v1/likes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token"),
       },
       body: JSON.stringify({
         postId: postId,
-        userId: userId,
+        userId: localStorage.getItem("currentUser"),
       }),
     })
       .then((res) => res.json())
+      .then((result) => {
+        setLikeId(result.id);
+      })
       .catch((error) => console.error("Error:", error));
   };
 
   const deleteLike = () => {
-    fetch("/likes/"+likeId, {
+    fetch("/v1/likes/" + likeId, {
       method: "DELETE",
+      headers: {
+        "Authorization": localStorage.getItem("token"),
+      },
     })
     .catch((error) => console.error("Error:", error));
-  }
+  };
 
   const checkLikes = () => {
-    var likeControl = likes.find(like => like.userId === userId);
-    if (likeControl != null) {
-      setLikeId(likeControl.id);
-      setIsLiked(true);
-    } 
-  }
-  
+    if (likes && likes.length >= 0) {
+      var likeControl = likes.find((like => "" + like.userId === localStorage.getItem("currentUser")));
+      if (likeControl != null) {
+        setLikeId(likeControl.id);
+        setIsLiked(true);
+      }
+    }
+  };
 
   useEffect(() => {
     if (isInitialMount.current) isInitialMount.current = false;
     else refreshComments();
-  }, []);
+  }, [refreshComments]);
 
-  useEffect(() => {checkLikes()},[])
+  useEffect(() => {
+    checkLikes();
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -165,9 +176,13 @@ function Post(props) {
             </Typography>
           </CardContent>
           <CardActions disableSpacing>
-            <IconButton onClick={handleLike} aria-label="add to favorites">
+            { disabled ?
+            <IconButton disabled onClick={handleLike} aria-label="add to favorites">
               <FavoriteIcon style={isLiked ? { color: "red" } : null} />
-            </IconButton>
+            </IconButton> :
+            <IconButton onClick={handleLike} aria-label="add to favorites">
+            <FavoriteIcon style={isLiked ? { color: "red" } : null} />
+          </IconButton> }
             {likeCount}
             <ExpandMore
               expand={expanded}
@@ -192,11 +207,14 @@ function Post(props) {
                     ></Comment>
                   ))
                 : "loading"}
-                <CommentForm 
+                {disabled? "" :
+              <CommentForm 
                 userId={1}
                 userName={"USER"}
                 postId={postId}
-                ></CommentForm>
+                refreshComments={refreshComments} 
+              />
+                }
             </Container>
           </Collapse>
         </Card>

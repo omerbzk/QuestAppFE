@@ -47,11 +47,15 @@ function Home() {
     return <div>Loading...</div>;
   } else {
     return (
+      
       <div className={classes.container}>
+        {localStorage.getItem("currentUser") == null? "" :
         <PostForm
-            userId={1}
-            userName={"John Doe"}
-            refreshPosts = {refreshPosts} />
+        userId={localStorage.getItem("currentUser")}
+        userName={localStorage.getItem("userName")}
+        refreshPosts = {refreshPosts} />
+        }
+        
         {postList.map((post) => (
           <Post
             key={post.id}
