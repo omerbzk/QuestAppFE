@@ -7,13 +7,13 @@ import {
   InputLabel,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate kancasını import ediyoruz
+import { useNavigate } from "react-router-dom"; 
 
 function Auth() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // useNavigate kancasını kullanarak navigate fonksiyonunu oluşturuyoruz
+  const navigate = useNavigate();
 
   const handleUsername = (value) => {
     setUsername(value);
@@ -48,7 +48,9 @@ function Auth() {
     sendRequest(path);
     setUsername("");
     setPassword("");
-    navigate("/auth"); 
+    if (path === "login") {
+      navigate("/");
+    }
   };
 
 
