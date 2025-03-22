@@ -22,9 +22,9 @@ import CommentForm from "../Comment/CommentForm";
 const useStyles = makeStyles({
   root: {
     textAlign: "left",
-    margin: "12px auto", // Ortalayıp alt alta sıralıyoruz
-    width: "90%", // Genişliği kontrol altında tut
-    maxWidth: "600px", // Kartın maksimum genişliğini belirle
+    margin: "12px auto", 
+    width: "90%", 
+    maxWidth: "600px",
   },
   media: {
     height: 0,
@@ -129,8 +129,9 @@ function Post(props) {
 
   const deleteLike = () => {
     fetch("/v1/likes/" + likeId, {
-      method: "DELETE",
+      method: "POST",
       headers: {
+        "Content-Type": "application/json",
         "Authorization": localStorage.getItem("token"),
       },
     })
